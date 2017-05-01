@@ -51,7 +51,7 @@ namespace ClanBot_Service
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    logger.LogWrite(DateTime.Now + " - " + ex.Message + " --- " + ex);
                 }
 
             }

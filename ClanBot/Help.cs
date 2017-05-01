@@ -39,7 +39,7 @@ namespace ClanBot
                 .AddCheck((command, user, channel) => !user.IsBot)
                 .Do(async (e) =>
                 {
-                    string text = "You can find me here https://github.com/Stu-be/ClanBot_Service/";
+                    string text = "You can find me here https://github.com/Stu-be/ClanBot/";
 
                     await e.Channel.SendMessage(text);
 
