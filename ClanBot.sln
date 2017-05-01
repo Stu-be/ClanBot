@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClanBot", "ClanBot\ClanBot.csproj", "{1954818B-990B-4C76-9B3A-0C25274385C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClanBot_ConsoleApp", "ClanBot_ConsoleApp\ClanBot_ConsoleApp.csproj", "{2144B1D5-2640-49A1-9733-190A26DF4E5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClanBot_Service", "ClanBot_Service\ClanBot_Service.csproj", "{748E4082-6501-4736-98D2-56682832C515}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1954818B-990B-4C76-9B3A-0C25274385C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1954818B-990B-4C76-9B3A-0C25274385C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1954818B-990B-4C76-9B3A-0C25274385C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1954818B-990B-4C76-9B3A-0C25274385C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2144B1D5-2640-49A1-9733-190A26DF4E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2144B1D5-2640-49A1-9733-190A26DF4E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2144B1D5-2640-49A1-9733-190A26DF4E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2144B1D5-2640-49A1-9733-190A26DF4E5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{748E4082-6501-4736-98D2-56682832C515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{748E4082-6501-4736-98D2-56682832C515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{748E4082-6501-4736-98D2-56682832C515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{748E4082-6501-4736-98D2-56682832C515}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
