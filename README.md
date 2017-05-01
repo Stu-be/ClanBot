@@ -1,0 +1,2 @@
+# ClanBot
+Discord clan bot
