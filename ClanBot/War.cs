@@ -129,5 +129,47 @@ namespace ClanBot
                     }
                 });
         }
+
+        public static void RegisterAvailableDamageCommand(CommandService commands, DiscordClient discord)
+        {
+            commands.CreateCommand("Available dmg")
+                .Description("!available dmg - calculate and list available damage from remaining bases.")
+                .AddCheck((command, user, channel) => !user.IsBot)
+                .Do(async (e) =>
+                {
+                    try
+                    {
+                        ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
+                        List<EnemyBasesView> ebv = new List<EnemyBasesView>();
+                        ebv = (from eb in dc.EnemyBasesViews
+                               select eb).ToList();
+                        if (ebv != null)
+                        {
+                            double totaldamage = 0;
+                            int warSize = ebv.Count();
+
+                            string result = "**AVAILABLE DAMAGE**\n";
+                            foreach (EnemyBasesView eb in ebv)
+                            {
+                                double baseDmg = (100 / warSize) * (eb.DAMAGE ?? 0);
+                                totaldamage += baseDmg;
+                                if(eb.DAMAGE != 100)
+                                {
+                                    if (eb.BASE__ < 10)
+                                        result += "`#" + eb.BASE__ + " ";
+                                    else
+                                        result += "`#" + eb.BASE__;
+                                    result +=  " | STARS: " + (eb.STARS ?? 0) + " | DAMAGE: " + (eb.DAMAGE ?? 0) + "% | AVAILABLE OVERALL DAMAGE: " + ((100.00 / warSize) / (100.00 - (double)(eb.DAMAGE ?? 0))) + "%`\n";
+                                }
+                            }
+                            await e.Channel.SendMessage(result);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                });
+        }
     }
 }

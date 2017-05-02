@@ -51,6 +51,7 @@ namespace ClanBot
             WarCommands.RegisterDisplayWarInfoCommand(commands, discord);
             WarCommands.RegisterGetClaimedBasesCommand(commands, discord);
             WarCommands.RegisterBaseCheckCommand(commands, discord);
+            WarCommands.RegisterAvailableDamageCommand(commands, discord);
 
             EnemyBaseNotes.RegisterDisplayEnemyBaseNotes(commands, discord);
             EnemyBaseNotes.RegisterAddBaseNoteCommand(commands, discord);

@@ -97,7 +97,9 @@
     <Compile Include="Warnings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ClasherDynasty.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>ClasherDynasty.designer.cs</LastGenOutput>
