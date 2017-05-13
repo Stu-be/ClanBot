@@ -1,11 +1,9 @@
-﻿using Discord;
+﻿using ClanBot.Commands;
+using Discord;
 using Discord.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace ClanBot
 {
@@ -33,44 +31,37 @@ namespace ClanBot
 
             commands = discord.GetService<CommandService>();
 
-            Help.RegisterHelpCommand(commands, discord);
-            Help.RegisterShowMeTheCodeCommand(commands, discord);
-            Help.RegisterShowRecruitMessageCommand(commands, discord);
-
-            Fun.RegisterHelloCommand(commands, discord);
-            Fun.RegisterSmellsCommand(commands, discord, rand);
-            Fun.RegisterClanNoobsCommand(commands, discord);
-
-            Admin.RegisterPurgeCommand(commands, discord);
-
-            Search.RegisterSearchMembersCommand(commands, discord);
-
-            Attendance.RegisterGetPlayerAttendanceCommand(commands, discord);
-            Attendance.RegisterGetPlayerCurSeasonAttendanceCommand(commands, discord);
-
-            WarCommands.RegisterDisplayWarInfoCommand(commands, discord);
-            WarCommands.RegisterGetClaimedBasesCommand(commands, discord);
-            WarCommands.RegisterBaseCheckCommand(commands, discord);
-            WarCommands.RegisterAvailableDamageCommand(commands, discord);
-
-            EnemyBaseNotes.RegisterDisplayEnemyBaseNotes(commands, discord);
-            EnemyBaseNotes.RegisterAddBaseNoteCommand(commands, discord);
-            EnemyBaseNotes.RegisterRemoveBaseNoteCommand(commands, discord);
-
-            Warnings.RegisterListWarningsCommand(commands, discord);
-            Warnings.RegisterPlayerWarningCommand(commands, discord);
-            Warnings.RegisterRemovePlayerWarningCommand(commands, discord);
+            #region register command groups
+            HelpCommands.RegisterHelpCommands(commands, discord);
+            FunCommands.RegisterFunCommands(commands, discord);
+            SettingCommands.RegisterWebsiteCommands(commands, discord);          
+            SearchCommands.RegisterSearchCommands(commands, discord);
+            AttendanceCommands.RegisterAttendanceCommands(commands, discord);
+            WarningCommands.RegisterWarningCommands(commands, discord);
+            EnemyNoteCommands.RegisterEnemyNoteCommands(commands, discord);
+            WarCommands.RegisterWarCommands(commands, discord);
+            AdminCommands.RegisterAdminCommands(commands, discord);
+            #endregion
 
             discord.ExecuteAndWait(async () =>
             {
                 string key = ConfigurationManager.AppSettings["Key"];
                 await discord.Connect(key, Discord.TokenType.Bot);
-            });
+                //auto start notifications
+                await StartNotifications();                 
+            });         
+        }
+
+        private async Task StartNotifications()
+        {
+            //wait 5 seconds to ensure the bot is connected and setup
+            await Task.Delay(5000);
+            await NotificationManager.StartRegisterNotification(discord, 15);
         }
 
         private void Log(object sender, LogMessageEventArgs e)
         {
-            Console.WriteLine(DateTime.Now + " - " + e.Message + " - " + e.Exception);
+            //Console.WriteLine(DateTime.Now + " - " + e.Message + " - " + e.Exception);
             new LogWriter(DateTime.Now + " - " + e.Message + " --- " + e.Exception);
         }
     }

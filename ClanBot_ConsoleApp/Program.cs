@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClanBot;
 
 namespace ClanBot_ConsoleApp
 {
@@ -14,7 +13,7 @@ namespace ClanBot_ConsoleApp
             Console.WriteLine("SERVER STARTING...");
             try
             {
-                new ClasherDynBot();
+                new ClanBot.ClasherDynBot();
                 Console.ReadLine();
             }
             catch (Exception ex)
