@@ -57,6 +57,9 @@ namespace ClanBot
     partial void InsertCurWarAttack(CurWarAttack instance);
     partial void UpdateCurWarAttack(CurWarAttack instance);
     partial void DeleteCurWarAttack(CurWarAttack instance);
+    partial void InsertAttackStrat(AttackStrat instance);
+    partial void UpdateAttackStrat(AttackStrat instance);
+    partial void DeleteAttackStrat(AttackStrat instance);
         #endregion
 
         public ClasherDynastyDataContext() :
@@ -166,6 +169,14 @@ namespace ClanBot
 			get
 			{
 				return this.GetTable<CurWarAttack>();
+			}
+		}
+		
+		public System.Data.Linq.Table<AttackStrat> AttackStrats
+		{
+			get
+			{
+				return this.GetTable<AttackStrat>();
 			}
 		}
 		
@@ -2977,6 +2988,308 @@ namespace ClanBot
 						this._WarID = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("War");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.AttackStrats")]
+	public partial class AttackStrat : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _AttackStratId;
+		
+		private string _AttackStrat1;
+		
+		private string _Details;
+		
+		private string _Spells;
+		
+		private string _Brief;
+		
+		private string _CompImage;
+		
+		private string _StratImage;
+		
+		private string _VidLink;
+		
+		private bool _TH8;
+		
+		private bool _TH9;
+		
+		private bool _TH10;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnAttackStratIdChanging(System.Guid value);
+    partial void OnAttackStratIdChanged();
+    partial void OnAttackStrat1Changing(string value);
+    partial void OnAttackStrat1Changed();
+    partial void OnDetailsChanging(string value);
+    partial void OnDetailsChanged();
+    partial void OnSpellsChanging(string value);
+    partial void OnSpellsChanged();
+    partial void OnBriefChanging(string value);
+    partial void OnBriefChanged();
+    partial void OnCompImageChanging(string value);
+    partial void OnCompImageChanged();
+    partial void OnStratImageChanging(string value);
+    partial void OnStratImageChanged();
+    partial void OnVidLinkChanging(string value);
+    partial void OnVidLinkChanged();
+    partial void OnTH8Changing(bool value);
+    partial void OnTH8Changed();
+    partial void OnTH9Changing(bool value);
+    partial void OnTH9Changed();
+    partial void OnTH10Changing(bool value);
+    partial void OnTH10Changed();
+    #endregion
+		
+		public AttackStrat()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttackStratId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid AttackStratId
+		{
+			get
+			{
+				return this._AttackStratId;
+			}
+			set
+			{
+				if ((this._AttackStratId != value))
+				{
+					this.OnAttackStratIdChanging(value);
+					this.SendPropertyChanging();
+					this._AttackStratId = value;
+					this.SendPropertyChanged("AttackStratId");
+					this.OnAttackStratIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="AttackStrat", Storage="_AttackStrat1", DbType="VarChar(50)")]
+		public string AttackStrat1
+		{
+			get
+			{
+				return this._AttackStrat1;
+			}
+			set
+			{
+				if ((this._AttackStrat1 != value))
+				{
+					this.OnAttackStrat1Changing(value);
+					this.SendPropertyChanging();
+					this._AttackStrat1 = value;
+					this.SendPropertyChanged("AttackStrat1");
+					this.OnAttackStrat1Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Details", DbType="VarChar(300)")]
+		public string Details
+		{
+			get
+			{
+				return this._Details;
+			}
+			set
+			{
+				if ((this._Details != value))
+				{
+					this.OnDetailsChanging(value);
+					this.SendPropertyChanging();
+					this._Details = value;
+					this.SendPropertyChanged("Details");
+					this.OnDetailsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Spells", DbType="NVarChar(300)")]
+		public string Spells
+		{
+			get
+			{
+				return this._Spells;
+			}
+			set
+			{
+				if ((this._Spells != value))
+				{
+					this.OnSpellsChanging(value);
+					this.SendPropertyChanging();
+					this._Spells = value;
+					this.SendPropertyChanged("Spells");
+					this.OnSpellsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Brief", DbType="NVarChar(MAX)")]
+		public string Brief
+		{
+			get
+			{
+				return this._Brief;
+			}
+			set
+			{
+				if ((this._Brief != value))
+				{
+					this.OnBriefChanging(value);
+					this.SendPropertyChanging();
+					this._Brief = value;
+					this.SendPropertyChanged("Brief");
+					this.OnBriefChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CompImage", DbType="NVarChar(50)")]
+		public string CompImage
+		{
+			get
+			{
+				return this._CompImage;
+			}
+			set
+			{
+				if ((this._CompImage != value))
+				{
+					this.OnCompImageChanging(value);
+					this.SendPropertyChanging();
+					this._CompImage = value;
+					this.SendPropertyChanged("CompImage");
+					this.OnCompImageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StratImage", DbType="NVarChar(50)")]
+		public string StratImage
+		{
+			get
+			{
+				return this._StratImage;
+			}
+			set
+			{
+				if ((this._StratImage != value))
+				{
+					this.OnStratImageChanging(value);
+					this.SendPropertyChanging();
+					this._StratImage = value;
+					this.SendPropertyChanged("StratImage");
+					this.OnStratImageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VidLink", DbType="NVarChar(50)")]
+		public string VidLink
+		{
+			get
+			{
+				return this._VidLink;
+			}
+			set
+			{
+				if ((this._VidLink != value))
+				{
+					this.OnVidLinkChanging(value);
+					this.SendPropertyChanging();
+					this._VidLink = value;
+					this.SendPropertyChanged("VidLink");
+					this.OnVidLinkChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TH8", DbType="Bit NOT NULL")]
+		public bool TH8
+		{
+			get
+			{
+				return this._TH8;
+			}
+			set
+			{
+				if ((this._TH8 != value))
+				{
+					this.OnTH8Changing(value);
+					this.SendPropertyChanging();
+					this._TH8 = value;
+					this.SendPropertyChanged("TH8");
+					this.OnTH8Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TH9", DbType="Bit NOT NULL")]
+		public bool TH9
+		{
+			get
+			{
+				return this._TH9;
+			}
+			set
+			{
+				if ((this._TH9 != value))
+				{
+					this.OnTH9Changing(value);
+					this.SendPropertyChanging();
+					this._TH9 = value;
+					this.SendPropertyChanged("TH9");
+					this.OnTH9Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TH10", DbType="Bit NOT NULL")]
+		public bool TH10
+		{
+			get
+			{
+				return this._TH10;
+			}
+			set
+			{
+				if ((this._TH10 != value))
+				{
+					this.OnTH10Changing(value);
+					this.SendPropertyChanging();
+					this._TH10 = value;
+					this.SendPropertyChanged("TH10");
+					this.OnTH10Changed();
 				}
 			}
 		}

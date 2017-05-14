@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using ClanBot.ResultObjects;
+using Discord;
 using Discord.Commands;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace ClanBot.Commands
 {
     static class WarCommands
     {
+
         public static void RegisterWarCommands(CommandService commands, DiscordClient discord)
         {
             commands.CreateGroup("war", cgb =>
@@ -302,24 +304,74 @@ namespace ClanBot.Commands
                                     // if no resul entered
                                     if (attack.Damage == null)
                                     {
-                                        // check stars value
-                                        //attack.Stars = Convert.ToInt16(e.GetArg(1));
+                                        // validate stars attack type and damage
+                                        AttackValidationResult res = ValidateResults(e.GetArg(1), e.GetArg(2), e.GetArg(3));
+                                        if(res.success)
+                                        {
+                                            attack.Stars = res.stars;
+                                            attack.AttackType = res.attackType;
+                                            attack.Damage = res.damage;
+                                            dc.SubmitChanges();
+                                            await e.Channel.SendMessage("**ENTER RESULT** ```RESULT ENTERED: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
+                                            //await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
+                                        }
+                                        else
+                                        {
+                                            string failMessage = "invalid results for: ";
+                                            if(res.stars == null)
+                                            {
+                                                failMessage += "stars";
+                                            }
+                                            if(res.attackType == null)
+                                            {
+                                                if (res.stars == null)
+                                                    failMessage += ", ";
+                                                failMessage += "attack type";
+                                            }
+                                            if (res.damage == null)
+                                            {
+                                                if (res.attackType == null)
+                                                    failMessage += ", ";
+                                                failMessage += "damege";
+                                            }
+                                            await e.Channel.SendMessage("**ENTER RESULT** ```ENTER RESULT FAILED: sorry " + user.UserName + " " + failMessage+ ".```");
+                                        }
 
-                                        // check attack type exists
-                                        //attack.AttackType = e.GetArg(2);
-
-                                        // check damage value
-                                        //attack.Damage = Convert.ToInt16(e.GetArg(3));
-
-                                        //dc.SubmitChanges();
-                                        await e.Channel.SendMessage("**ENTER RESULT** ```RESULT ENTERED: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
-                                        await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
                                     }
                                     // if result already entered
                                     else
                                     {
-                                        await e.Channel.SendMessage("**ENTER RESULT** ```RESULT UPDATED: " + user.UserName + " actually hit #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
-                                        await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
+                                        // validate stars attack type and damage
+                                        AttackValidationResult res = ValidateResults(e.GetArg(1), e.GetArg(2), e.GetArg(3));
+                                        if (res.success)
+                                        {
+                                            attack.Stars = res.stars;
+                                            attack.AttackType = res.attackType;
+                                            attack.Damage = res.damage;
+                                            dc.SubmitChanges();
+                                            await e.Channel.SendMessage("**ENTER RESULT** ```RESULT UPDATED: " + user.UserName + " actually hit #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
+                                        }
+                                        else
+                                        {
+                                            string failMessage = "invalid results for: ";
+                                            if (res.stars == null)
+                                            {
+                                                failMessage += "stars";
+                                            }
+                                            if (res.attackType == null)
+                                            {
+                                                if (res.stars == null)
+                                                    failMessage += ", ";
+                                                failMessage += "attack type";
+                                            }
+                                            if (res.damage == null)
+                                            {
+                                                if (res.attackType == null)
+                                                    failMessage += ", ";
+                                                failMessage += "damege";
+                                            }
+                                            await e.Channel.SendMessage("**ENTER RESULT** ```RESULT UPDATED FAILED: sorry " + user.UserName + " " + failMessage + ".```");
+                                        }
                                     }
                                 }
                                 // if no claim or attack found for specified base
@@ -343,5 +395,38 @@ namespace ClanBot.Commands
                     });
             });
         }
+
+        public static AttackValidationResult ValidateResults(string stars, string attackType, string damage)
+        {
+            AttackValidationResult res = new AttackValidationResult();
+            // check stars
+            short numOfstars = -1;
+            Int16.TryParse(stars, out numOfstars);
+            if (numOfstars >= 0 && numOfstars <= 3)
+                res.stars = numOfstars;
+            else
+                res.success = false;
+
+            // check attack type
+            ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
+            var attType = (from at in dc.AttackStrats
+                           where at.AttackStrat1 == attackType
+                           select at).FirstOrDefault();
+            if (attType != null)
+                res.attackType = attackType;
+            else
+                res.success = false;
+
+            // check damage
+            int dmgPerc = -1;
+            Int32.TryParse(damage, out dmgPerc);
+            if (dmgPerc >= 0 && dmgPerc <= 100)
+                res.damage = dmgPerc;
+            else
+                res.success = false;
+
+            return res;
+        }
     }
+   
 }

@@ -44,5 +44,13 @@ namespace ClanBot.ResultObjects
         public Channel channel { get; set; }
         public Discord.User user { get; set; }
     }
-   
+
+    public class AttackValidationResult
+    {
+        public bool success = true;
+        public short? stars { get; set; }
+        public string attackType { get; set; }
+        public int? damage { get; set; }
+    }
+
 }
