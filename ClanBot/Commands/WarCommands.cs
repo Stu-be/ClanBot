@@ -191,17 +191,153 @@ namespace ClanBot.Commands
 
                             if (user != null)
                             {
-                                await e.Channel.SendMessage("**CLAIM BASE** ```TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.```");
-                                await e.Channel.SendMessage("```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS MESSAGE YOU ARE SETUP AND READY :)```");
+                                int? returnValue = dc.ClaimBase(user.UserId.ToString(), e.GetArg(0));
+
+                                switch (returnValue)
+                                {
+                                    case 1:         // Claim successful.
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.```");
+                                        break;
+                                    case 51000:     // Both attacks already used.
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " you have already used both of your attacks this war.```");
+                                        break;
+                                    case 51001:     // Base is already claimed.
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " that base is already claimed.```");
+                                        break;
+                                    case 51002:     // Cannot hit the same base twice.
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " you cannot attack the same base twice.```");
+                                        break;
+                                    case 0:         // error claiming
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " unable to claim base at the moment... please use the website.```");
+                                        break;
+                                }
                             }
                             else
                             {
-                                await e.Channel.SendMessage("**CLAIM BASE** ```FAILED TO CLAIM: account is not linked!```");
+                                await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: account is not linked!```");
                             }
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("ERROR! - " + ex.Message);
+                            discord.Log.Error("RegisterDisplayWarInfoCommand", ex.Message);
+                        }
+                        #endregion
+                    });
+
+                cgb.CreateCommand("unclaim target")
+                    .Description("!war unclaim target [base number] - unclaim a war base. **note: must have acount linked**")
+                    .Alias(new string[] { "-ut", "unclaim" })
+                    .AddCheck((command, user, channel) => !user.IsBot)
+                    .Parameter("baseNumber", ParameterType.Required)
+                    .Do(async (e) =>
+                    {
+                        #region war unclaim target
+                        try
+                        {
+                            ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
+                            User user = (from u in dc.Users
+                                         where u.DiscordId == e.User.Id.ToString()
+                                         select u).FirstOrDefault();
+
+                            if (user != null)
+                            {
+                                CurWarAttack attack = (from a in dc.CurWarAttacks
+                                              where a.UserID == user.UserId
+                                                && a.EnemyBase.EnemyBaseNo.ToString() == e.GetArg(0)
+                                              select a).FirstOrDefault();
+
+                                if(attack != null)
+                                {
+                                    dc.CurWarAttacks.DeleteOnSubmit(attack);
+                                    dc.SubmitChanges();
+                                    await e.Channel.SendMessage("**UNCLAIM BASE** ```TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.```");
+                                }
+                                else
+                                {
+                                    await e.Channel.SendMessage("**UNCLAIM BASE** ```UNCLAIM FAILED: sorry " + user.UserName + " you do not seem to have claimed or attacked that base.```");
+                                }
+                                
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage("**UNCLAIM BASE** ```UNCLAIM FAILED: account is not linked!```");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            discord.Log.Error("RegisterDisplayWarInfoCommand", ex.Message);
+                        }
+                        #endregion
+                    });
+
+                cgb.CreateCommand("enter result")
+                    .Description("!war enter result [base number] [stars] [attack_type] [damage] - enter attack results. **note: must have acount linked**")
+                    .Alias(new string[] { "-er", "result" })
+                    .AddCheck((command, user, channel) => !user.IsBot)
+                    .Parameter("baseNumber", ParameterType.Required)
+                    .Parameter("numOfStars", ParameterType.Required)
+                    .Parameter("attackType", ParameterType.Required)
+                    .Parameter("damagePerc", ParameterType.Required)
+                    .Do(async (e) =>
+                    {
+                        #region war enter result
+                        try
+                        {
+                            ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
+                            User user = (from u in dc.Users
+                                         where u.DiscordId == e.User.Id.ToString()
+                                         select u).FirstOrDefault();
+
+                            // if user is linked
+                            if (user != null)
+                            {
+                                CurWarAttack attack = (from a in dc.CurWarAttacks
+                                                       where a.UserID == user.UserId
+                                                         && a.EnemyBase.EnemyBaseNo.ToString() == e.GetArg(0)
+                                                       select a).FirstOrDefault();
+
+                                // if claim or attack found for specified base
+                                if (attack != null)
+                                {
+                                    // if no resul entered
+                                    if (attack.Damage == null)
+                                    {
+                                        // check stars value
+                                        //attack.Stars = Convert.ToInt16(e.GetArg(1));
+
+                                        // check attack type exists
+                                        //attack.AttackType = e.GetArg(2);
+
+                                        // check damage value
+                                        //attack.Damage = Convert.ToInt16(e.GetArg(3));
+
+                                        //dc.SubmitChanges();
+                                        await e.Channel.SendMessage("**ENTER RESULT** ```RESULT ENTERED: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
+                                        await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
+                                    }
+                                    // if result already entered
+                                    else
+                                    {
+                                        await e.Channel.SendMessage("**ENTER RESULT** ```RESULT UPDATED: " + user.UserName + " actually hit #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
+                                        await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
+                                    }
+                                }
+                                // if no claim or attack found for specified base
+                                else
+                                {
+                                    await e.Channel.SendMessage("**ENTER RESULT** ```ENTER RESULT FAILED: sorry " + user.UserName + " you do not seem to have claimed or attacked that base.```");
+                                }
+
+                            }
+                            // if user is not linked
+                            else
+                            {
+                                await e.Channel.SendMessage("**ENTER RESULT** ```ENTER RESULT FAILED: account is not linked!```");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            discord.Log.Error("RegisterDisplayWarInfoCommand", ex.Message);
                         }
                         #endregion
                     });

@@ -54,15 +54,18 @@ namespace ClanBot
     partial void InsertUser(User instance);
     partial void UpdateUser(User instance);
     partial void DeleteUser(User instance);
-    #endregion
+    partial void InsertCurWarAttack(CurWarAttack instance);
+    partial void UpdateCurWarAttack(CurWarAttack instance);
+    partial void DeleteCurWarAttack(CurWarAttack instance);
+        #endregion
 
         public ClasherDynastyDataContext() :
-            base(global::ClanBot.Properties.Settings.Default.aspnet_ClasherDynasty_20140714184957ConnectionString, mappingSource)
+                base(global::ClanBot.Properties.Settings.Default.aspnet_ClasherDynasty_20140714184957ConnectionString, mappingSource)
         {
             OnCreated();
         }
-		
-		public ClasherDynastyDataContext(string connection) : 
+
+        public ClasherDynastyDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -158,6 +161,14 @@ namespace ClanBot
 			}
 		}
 		
+		public System.Data.Linq.Table<CurWarAttack> CurWarAttacks
+		{
+			get
+			{
+				return this.GetTable<CurWarAttack>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.tvfGetAttendance", IsComposable=true)]
 		public IQueryable<tvfGetAttendanceResult> tvfGetAttendance([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(30)")] string player)
 		{
@@ -182,6 +193,13 @@ namespace ClanBot
 		{
 			return this.CreateMethodCallQuery<tvfMembersAttendanceResult>(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.ClaimBase")]
+		public int ClaimBase([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(50)")] string uid, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(50)")] string eb)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), uid, eb);
+			return ((int)(result.ReturnValue));
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.EnemyBases")]
@@ -201,6 +219,8 @@ namespace ClanBot
 		private System.Nullable<short> _Stars;
 		
 		private string _Notes;
+		
+		private EntitySet<CurWarAttack> _CurWarAttacks;
 		
 		private EntityRef<War> _War;
 		
@@ -224,6 +244,7 @@ namespace ClanBot
 		
 		public EnemyBase()
 		{
+			this._CurWarAttacks = new EntitySet<CurWarAttack>(new Action<CurWarAttack>(this.attach_CurWarAttacks), new Action<CurWarAttack>(this.detach_CurWarAttacks));
 			this._War = default(EntityRef<War>);
 			OnCreated();
 		}
@@ -352,6 +373,19 @@ namespace ClanBot
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EnemyBase_CurWarAttack", Storage="_CurWarAttacks", ThisKey="EnemyBaseID", OtherKey="EnemyBaseID")]
+		public EntitySet<CurWarAttack> CurWarAttacks
+		{
+			get
+			{
+				return this._CurWarAttacks;
+			}
+			set
+			{
+				this._CurWarAttacks.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="War_EnemyBase", Storage="_War", ThisKey="WarID", OtherKey="WarID", IsForeignKey=true)]
 		public War War
 		{
@@ -405,6 +439,18 @@ namespace ClanBot
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_CurWarAttacks(CurWarAttack entity)
+		{
+			this.SendPropertyChanging();
+			entity.EnemyBase = this;
+		}
+		
+		private void detach_CurWarAttacks(CurWarAttack entity)
+		{
+			this.SendPropertyChanging();
+			entity.EnemyBase = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.War")]
@@ -439,6 +485,8 @@ namespace ClanBot
 		
 		private EntitySet<EnemyBase> _EnemyBases;
 		
+		private EntitySet<CurWarAttack> _CurWarAttacks;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -472,6 +520,7 @@ namespace ClanBot
 		public War()
 		{
 			this._EnemyBases = new EntitySet<EnemyBase>(new Action<EnemyBase>(this.attach_EnemyBases), new Action<EnemyBase>(this.detach_EnemyBases));
+			this._CurWarAttacks = new EntitySet<CurWarAttack>(new Action<CurWarAttack>(this.attach_CurWarAttacks), new Action<CurWarAttack>(this.detach_CurWarAttacks));
 			OnCreated();
 		}
 		
@@ -728,6 +777,19 @@ namespace ClanBot
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="War_CurWarAttack", Storage="_CurWarAttacks", ThisKey="WarID", OtherKey="WarID")]
+		public EntitySet<CurWarAttack> CurWarAttacks
+		{
+			get
+			{
+				return this._CurWarAttacks;
+			}
+			set
+			{
+				this._CurWarAttacks.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -755,6 +817,18 @@ namespace ClanBot
 		}
 		
 		private void detach_EnemyBases(EnemyBase entity)
+		{
+			this.SendPropertyChanging();
+			entity.War = null;
+		}
+		
+		private void attach_CurWarAttacks(CurWarAttack entity)
+		{
+			this.SendPropertyChanging();
+			entity.War = this;
+		}
+		
+		private void detach_CurWarAttacks(CurWarAttack entity)
 		{
 			this.SendPropertyChanging();
 			entity.War = null;
@@ -2169,6 +2243,8 @@ namespace ClanBot
 		
 		private EntityRef<Membership> _Membership;
 		
+		private EntitySet<CurWarAttack> _CurWarAttacks;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2204,6 +2280,7 @@ namespace ClanBot
 			this._UsersInRoles = new EntitySet<UsersInRole>(new Action<UsersInRole>(this.attach_UsersInRoles), new Action<UsersInRole>(this.detach_UsersInRoles));
 			this._UserWarnings = new EntitySet<UserWarning>(new Action<UserWarning>(this.attach_UserWarnings), new Action<UserWarning>(this.detach_UserWarnings));
 			this._Membership = default(EntityRef<Membership>);
+			this._CurWarAttacks = new EntitySet<CurWarAttack>(new Action<CurWarAttack>(this.attach_CurWarAttacks), new Action<CurWarAttack>(this.detach_CurWarAttacks));
 			OnCreated();
 		}
 		
@@ -2502,6 +2579,19 @@ namespace ClanBot
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_CurWarAttack", Storage="_CurWarAttacks", ThisKey="UserId", OtherKey="UserID")]
+		public EntitySet<CurWarAttack> CurWarAttacks
+		{
+			get
+			{
+				return this._CurWarAttacks;
+			}
+			set
+			{
+				this._CurWarAttacks.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2544,6 +2634,371 @@ namespace ClanBot
 		{
 			this.SendPropertyChanging();
 			entity.User = null;
+		}
+		
+		private void attach_CurWarAttacks(CurWarAttack entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_CurWarAttacks(CurWarAttack entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CurWarAttacks")]
+	public partial class CurWarAttack : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _AttackID;
+		
+		private System.Nullable<System.Guid> _WarID;
+		
+		private System.Nullable<System.Guid> _EnemyBaseID;
+		
+		private System.Nullable<System.Guid> _UserID;
+		
+		private System.Nullable<short> _Stars;
+		
+		private System.DateTime _DateTime;
+		
+		private string _AttackType;
+		
+		private System.Nullable<int> _Damage;
+		
+		private EntityRef<EnemyBase> _EnemyBase;
+		
+		private EntityRef<User> _User;
+		
+		private EntityRef<War> _War;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnAttackIDChanging(System.Guid value);
+    partial void OnAttackIDChanged();
+    partial void OnWarIDChanging(System.Nullable<System.Guid> value);
+    partial void OnWarIDChanged();
+    partial void OnEnemyBaseIDChanging(System.Nullable<System.Guid> value);
+    partial void OnEnemyBaseIDChanged();
+    partial void OnUserIDChanging(System.Nullable<System.Guid> value);
+    partial void OnUserIDChanged();
+    partial void OnStarsChanging(System.Nullable<short> value);
+    partial void OnStarsChanged();
+    partial void OnDateTimeChanging(System.DateTime value);
+    partial void OnDateTimeChanged();
+    partial void OnAttackTypeChanging(string value);
+    partial void OnAttackTypeChanged();
+    partial void OnDamageChanging(System.Nullable<int> value);
+    partial void OnDamageChanged();
+    #endregion
+		
+		public CurWarAttack()
+		{
+			this._EnemyBase = default(EntityRef<EnemyBase>);
+			this._User = default(EntityRef<User>);
+			this._War = default(EntityRef<War>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttackID", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid AttackID
+		{
+			get
+			{
+				return this._AttackID;
+			}
+			set
+			{
+				if ((this._AttackID != value))
+				{
+					this.OnAttackIDChanging(value);
+					this.SendPropertyChanging();
+					this._AttackID = value;
+					this.SendPropertyChanged("AttackID");
+					this.OnAttackIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarID", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> WarID
+		{
+			get
+			{
+				return this._WarID;
+			}
+			set
+			{
+				if ((this._WarID != value))
+				{
+					if (this._War.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnWarIDChanging(value);
+					this.SendPropertyChanging();
+					this._WarID = value;
+					this.SendPropertyChanged("WarID");
+					this.OnWarIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EnemyBaseID", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> EnemyBaseID
+		{
+			get
+			{
+				return this._EnemyBaseID;
+			}
+			set
+			{
+				if ((this._EnemyBaseID != value))
+				{
+					if (this._EnemyBase.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnEnemyBaseIDChanging(value);
+					this.SendPropertyChanging();
+					this._EnemyBaseID = value;
+					this.SendPropertyChanged("EnemyBaseID");
+					this.OnEnemyBaseIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserID", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UserID
+		{
+			get
+			{
+				return this._UserID;
+			}
+			set
+			{
+				if ((this._UserID != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIDChanging(value);
+					this.SendPropertyChanging();
+					this._UserID = value;
+					this.SendPropertyChanged("UserID");
+					this.OnUserIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Stars", DbType="SmallInt")]
+		public System.Nullable<short> Stars
+		{
+			get
+			{
+				return this._Stars;
+			}
+			set
+			{
+				if ((this._Stars != value))
+				{
+					this.OnStarsChanging(value);
+					this.SendPropertyChanging();
+					this._Stars = value;
+					this.SendPropertyChanged("Stars");
+					this.OnStarsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateTime", DbType="DateTime NOT NULL")]
+		public System.DateTime DateTime
+		{
+			get
+			{
+				return this._DateTime;
+			}
+			set
+			{
+				if ((this._DateTime != value))
+				{
+					this.OnDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._DateTime = value;
+					this.SendPropertyChanged("DateTime");
+					this.OnDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttackType", DbType="NVarChar(50)")]
+		public string AttackType
+		{
+			get
+			{
+				return this._AttackType;
+			}
+			set
+			{
+				if ((this._AttackType != value))
+				{
+					this.OnAttackTypeChanging(value);
+					this.SendPropertyChanging();
+					this._AttackType = value;
+					this.SendPropertyChanged("AttackType");
+					this.OnAttackTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Damage", DbType="Int")]
+		public System.Nullable<int> Damage
+		{
+			get
+			{
+				return this._Damage;
+			}
+			set
+			{
+				if ((this._Damage != value))
+				{
+					this.OnDamageChanging(value);
+					this.SendPropertyChanging();
+					this._Damage = value;
+					this.SendPropertyChanged("Damage");
+					this.OnDamageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EnemyBase_CurWarAttack", Storage="_EnemyBase", ThisKey="EnemyBaseID", OtherKey="EnemyBaseID", IsForeignKey=true)]
+		public EnemyBase EnemyBase
+		{
+			get
+			{
+				return this._EnemyBase.Entity;
+			}
+			set
+			{
+				EnemyBase previousValue = this._EnemyBase.Entity;
+				if (((previousValue != value) 
+							|| (this._EnemyBase.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EnemyBase.Entity = null;
+						previousValue.CurWarAttacks.Remove(this);
+					}
+					this._EnemyBase.Entity = value;
+					if ((value != null))
+					{
+						value.CurWarAttacks.Add(this);
+						this._EnemyBaseID = value.EnemyBaseID;
+					}
+					else
+					{
+						this._EnemyBaseID = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("EnemyBase");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_CurWarAttack", Storage="_User", ThisKey="UserID", OtherKey="UserId", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.CurWarAttacks.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.CurWarAttacks.Add(this);
+						this._UserID = value.UserId;
+					}
+					else
+					{
+						this._UserID = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="War_CurWarAttack", Storage="_War", ThisKey="WarID", OtherKey="WarID", IsForeignKey=true)]
+		public War War
+		{
+			get
+			{
+				return this._War.Entity;
+			}
+			set
+			{
+				War previousValue = this._War.Entity;
+				if (((previousValue != value) 
+							|| (this._War.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._War.Entity = null;
+						previousValue.CurWarAttacks.Remove(this);
+					}
+					this._War.Entity = value;
+					if ((value != null))
+					{
+						value.CurWarAttacks.Add(this);
+						this._WarID = value.WarID;
+					}
+					else
+					{
+						this._WarID = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("War");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	
