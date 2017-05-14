@@ -43,7 +43,8 @@ namespace ClanBot.Commands
                                     text += "" + c.Description.ToLower() + "\n";
                             }
                             text += "```";
-                            await e.Channel.SendMessage(text);
+                            await e.User.PrivateChannel.SendMessage(text);
+                            await e.Channel.SendMessage("**HELP**```THATS WHAT IM HERE FOR!!! A list of commands is being sent via private message.```");
                         }
                         catch (Exception ex)
                         {

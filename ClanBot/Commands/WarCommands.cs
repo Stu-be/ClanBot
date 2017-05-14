@@ -4,6 +4,7 @@ using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClanBot.Commands
 {
@@ -199,8 +200,8 @@ namespace ClanBot.Commands
                                 {
                                     case 1:         // Claim successful.
                                         String msg = "TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.";
-                                        LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
                                         await e.Channel.SendMessage("**CLAIM BASE** ```"+ msg +"```");
+                                        await LogWarNews(msg, DateTime.UtcNow, user.UserName + " via ClanBot");
                                         break;
                                     case 51000:     // Both attacks already used.
                                         await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " you have already used both of your attacks this war.```");
@@ -254,9 +255,9 @@ namespace ClanBot.Commands
                                 {
                                     dc.CurWarAttacks.DeleteOnSubmit(attack);
                                     dc.SubmitChanges();
-                                    String msg = "TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.";
-                                    LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
+                                    String msg = "TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.";                                  
                                     await e.Channel.SendMessage("**UNCLAIM BASE** ```" + msg + "```");
+                                    await LogWarNews(msg, DateTime.UtcNow, user.UserName + " via ClanBot");
                                 }
                                 else
                                 {
@@ -317,9 +318,9 @@ namespace ClanBot.Commands
                                             attack.Damage = res.damage;
                                             dc.SubmitChanges();
 
-                                            String msg = " ATTACK: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".";
-                                            LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
+                                            String msg = " ATTACK: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".";       
                                             await e.Channel.SendMessage("**ENTER RESULT** ```" + msg + "```");
+                                            await LogWarNews(msg, DateTime.UtcNow, user.UserName + " via ClanBot");
                                         }
                                         else
                                         {
@@ -461,11 +462,12 @@ namespace ClanBot.Commands
             return res;
         }
 
-        public static void LogWarNews(string msg, DateTime eventTime, string userName)
+        public static async Task LogWarNews(string msg, DateTime eventTime, string userName)
         {
-
+            await Task.Delay(500);
             ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
             WarNew newNews = new WarNew();
+            newNews.NewsID = Guid.NewGuid();
             newNews.News = msg;
             newNews.PostDateTime = eventTime;
             newNews.UserName = userName;
@@ -475,7 +477,6 @@ namespace ClanBot.Commands
                 dc.SubmitChanges();
             }
             catch(Exception ex){ throw ex; }
-          
         }
     }
    
