@@ -1,2 +1,2 @@
 # ClanBot
-Discord clan bot
+Discord clan bot for Clasher Dynasty
