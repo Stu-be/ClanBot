@@ -199,7 +199,7 @@ namespace ClanBot.Commands
                                 {
                                     case 1:         // Claim successful.
                                         String msg = "TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.";
-                                        LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                        LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
                                         await e.Channel.SendMessage("**CLAIM BASE** ```"+ msg +"```");
                                         break;
                                     case 51000:     // Both attacks already used.
@@ -255,7 +255,7 @@ namespace ClanBot.Commands
                                     dc.CurWarAttacks.DeleteOnSubmit(attack);
                                     dc.SubmitChanges();
                                     String msg = "TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.";
-                                    LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                    LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
                                     await e.Channel.SendMessage("**UNCLAIM BASE** ```" + msg + "```");
                                 }
                                 else
@@ -318,7 +318,7 @@ namespace ClanBot.Commands
                                             dc.SubmitChanges();
 
                                             String msg = " ATTACK: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".";
-                                            LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                            LogWarNews(msg, DateTime.Now, user.UserName + " via ClanBot");
                                             await e.Channel.SendMessage("**ENTER RESULT** ```" + msg + "```");
                                         }
                                         else
