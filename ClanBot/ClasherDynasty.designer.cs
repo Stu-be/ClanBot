@@ -60,6 +60,9 @@ namespace ClanBot
     partial void InsertAttackStrat(AttackStrat instance);
     partial void UpdateAttackStrat(AttackStrat instance);
     partial void DeleteAttackStrat(AttackStrat instance);
+    partial void InsertWarNew(WarNew instance);
+    partial void UpdateWarNew(WarNew instance);
+    partial void DeleteWarNew(WarNew instance);
         #endregion
 
         public ClasherDynastyDataContext() :
@@ -177,6 +180,14 @@ namespace ClanBot
 			get
 			{
 				return this.GetTable<AttackStrat>();
+			}
+		}
+		
+		public System.Data.Linq.Table<WarNew> WarNews
+		{
+			get
+			{
+				return this.GetTable<WarNew>();
 			}
 		}
 		
@@ -3290,6 +3301,140 @@ namespace ClanBot
 					this._TH10 = value;
 					this.SendPropertyChanged("TH10");
 					this.OnTH10Changed();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.WarNews")]
+	public partial class WarNew : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _NewsID;
+		
+		private string _News;
+		
+		private System.Nullable<System.DateTime> _PostDateTime;
+		
+		private string _UserName;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnNewsIDChanging(System.Guid value);
+    partial void OnNewsIDChanged();
+    partial void OnNewsChanging(string value);
+    partial void OnNewsChanged();
+    partial void OnPostDateTimeChanging(System.Nullable<System.DateTime> value);
+    partial void OnPostDateTimeChanged();
+    partial void OnUserNameChanging(string value);
+    partial void OnUserNameChanged();
+    #endregion
+		
+		public WarNew()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewsID", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid NewsID
+		{
+			get
+			{
+				return this._NewsID;
+			}
+			set
+			{
+				if ((this._NewsID != value))
+				{
+					this.OnNewsIDChanging(value);
+					this.SendPropertyChanging();
+					this._NewsID = value;
+					this.SendPropertyChanged("NewsID");
+					this.OnNewsIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_News", DbType="VarChar(MAX)")]
+		public string News
+		{
+			get
+			{
+				return this._News;
+			}
+			set
+			{
+				if ((this._News != value))
+				{
+					this.OnNewsChanging(value);
+					this.SendPropertyChanging();
+					this._News = value;
+					this.SendPropertyChanged("News");
+					this.OnNewsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PostDateTime", DbType="DateTime")]
+		public System.Nullable<System.DateTime> PostDateTime
+		{
+			get
+			{
+				return this._PostDateTime;
+			}
+			set
+			{
+				if ((this._PostDateTime != value))
+				{
+					this.OnPostDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._PostDateTime = value;
+					this.SendPropertyChanged("PostDateTime");
+					this.OnPostDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="VarChar(50)")]
+		public string UserName
+		{
+			get
+			{
+				return this._UserName;
+			}
+			set
+			{
+				if ((this._UserName != value))
+				{
+					this.OnUserNameChanging(value);
+					this.SendPropertyChanging();
+					this._UserName = value;
+					this.SendPropertyChanged("UserName");
+					this.OnUserNameChanged();
 				}
 			}
 		}

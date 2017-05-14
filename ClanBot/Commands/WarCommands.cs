@@ -198,7 +198,9 @@ namespace ClanBot.Commands
                                 switch (returnValue)
                                 {
                                     case 1:         // Claim successful.
-                                        await e.Channel.SendMessage("**CLAIM BASE** ```TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.```");
+                                        String msg = "TARGET CLAIMED: #" + e.GetArg(0) + " watch out! " + user.UserName + " is coming for you.";
+                                        LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                        await e.Channel.SendMessage("**CLAIM BASE** ```"+ msg +"```");
                                         break;
                                     case 51000:     // Both attacks already used.
                                         await e.Channel.SendMessage("**CLAIM BASE** ```CLAIM FAILED: sorry " + user.UserName + " you have already used both of your attacks this war.```");
@@ -252,7 +254,9 @@ namespace ClanBot.Commands
                                 {
                                     dc.CurWarAttacks.DeleteOnSubmit(attack);
                                     dc.SubmitChanges();
-                                    await e.Channel.SendMessage("**UNCLAIM BASE** ```TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.```");
+                                    String msg = "TARGET UNCLAIMED: #" + e.GetArg(0) + " you're lucky! " + user.UserName + " has decided not to smash your base.";
+                                    LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                    await e.Channel.SendMessage("**UNCLAIM BASE** ```" + msg + "```");
                                 }
                                 else
                                 {
@@ -312,8 +316,10 @@ namespace ClanBot.Commands
                                             attack.AttackType = res.attackType;
                                             attack.Damage = res.damage;
                                             dc.SubmitChanges();
-                                            await e.Channel.SendMessage("**ENTER RESULT** ```RESULT ENTERED: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".```");
-                                            //await e.Channel.SendMessage("**ENTER RESULT** ```NOT YET IMPLEMENTED, BUT IF YOU SEE THIS YOU ARE SETUP AND READY!```");
+
+                                            String msg = " ATTACK: " + user.UserName + " just smashed #" + e.GetArg(0) + " for " + e.GetArg(1) + " stars and " + e.GetArg(3) + "% damage with " + e.GetArg(2) + ".";
+                                            LogWarNews(msg, DateTime.Now, user.UserName + "via ClanBot");
+                                            await e.Channel.SendMessage("**ENTER RESULT** ```" + msg + "```");
                                         }
                                         else
                                         {
@@ -366,9 +372,9 @@ namespace ClanBot.Commands
                                             }
                                             if (res.damage == null)
                                             {
-                                                if (res.attackType == null)
+                                                if (res.attackType == null || res.stars == null)
                                                     failMessage += ", ";
-                                                failMessage += "damege";
+                                                failMessage += "damage";
                                             }
                                             await e.Channel.SendMessage("**ENTER RESULT** ```RESULT UPDATED FAILED: sorry " + user.UserName + " " + failMessage + ".```");
                                         }
@@ -421,11 +427,55 @@ namespace ClanBot.Commands
             int dmgPerc = -1;
             Int32.TryParse(damage, out dmgPerc);
             if (dmgPerc >= 0 && dmgPerc <= 100)
+            {
                 res.damage = dmgPerc;
+            }
             else
                 res.success = false;
 
+            // additional checks
+            if (res.success)
+            {
+                //check 3 stars are 100% dmg
+                if (res.stars == 3)
+                {
+                    if (res.damage != 100)
+                    {
+                        res.success = false;
+                        res.damage = null;
+                    }
+                }
+
+                //check 0 stars are less than 50% dmg
+                if(res.stars == 0)
+                {
+                    if(res.damage >= 50)
+                    {
+                        res.success = false;
+                        res.stars = null;
+                        res.damage = null;
+                    }
+                }
+            }
+
             return res;
+        }
+
+        public static void LogWarNews(string msg, DateTime eventTime, string userName)
+        {
+
+            ClasherDynastyDataContext dc = new ClasherDynastyDataContext();
+            WarNew newNews = new WarNew();
+            newNews.News = msg;
+            newNews.PostDateTime = eventTime;
+            newNews.UserName = userName;
+            try
+            {
+                dc.WarNews.InsertOnSubmit(newNews);
+                dc.SubmitChanges();
+            }
+            catch(Exception ex){ throw ex; }
+          
         }
     }
    
