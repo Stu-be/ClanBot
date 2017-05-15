@@ -32,22 +32,25 @@ namespace ClanBot.Commands
                                    where u.UserName.Contains(e.GetArg("Member"))
                                    select new MemberRank { userName = u.UserName, userRole = r.RoleName }).ToList();
 
-                            if(res.Count < 1)
+                            if (res.Count < 1)
                             {
                                 await e.Channel.SendMessage("NO USERS FOUND THAT MATCH YOUR SEARCH CRITERIA!");
                             }
-                            string message = "MEMBERS: \n";
-                            foreach (MemberRank u in res)
-                            {
-                                if (u.userName != null && u.userName != "")
-                                {
-                                    message += u.userName + "(" + u.userRole + ")\n";
-                                }
-                            }
-                            if (message.Length <= 2000)
-                                await e.Channel.SendMessage(message);
                             else
-                                await e.Channel.SendMessage(res.Count() + " USERS FOUND... PLEASE REFINE MEMBER SEARCH!");
+                            {
+                                string message = "MEMBERS: \n";
+                                foreach (MemberRank u in res)
+                                {
+                                    if (u.userName != null && u.userName != "")
+                                    {
+                                        message += u.userName + "(" + u.userRole + ")\n";
+                                    }
+                                }
+                                if (message.Length <= 2000)
+                                    await e.Channel.SendMessage(message);
+                                else
+                                    await e.Channel.SendMessage(res.Count() + " USERS FOUND... PLEASE REFINE MEMBER SEARCH!");
+                            }
                         }
                         catch (Exception ex) 
                         { 
