@@ -94,7 +94,7 @@ namespace ClanBot.Commands
                             {
                                 if (count >= numberOfBases)
                                     break;
-                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.CurrentSeasonStr + " \n";
+                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.CurrentSeasonStr + "% \n";
                                 count++;
                             }
                             message += "```";
@@ -106,7 +106,7 @@ namespace ClanBot.Commands
                             {
                                 if (count >= numberOfBases)
                                     break;
-                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.LastSeasonStr + " \n";
+                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.LastSeasonStr + "% \n";
                                 count++;
                             }
                             message += "```";
@@ -118,7 +118,7 @@ namespace ClanBot.Commands
                             {
                                 if (count >= numberOfBases)
                                     break;
-                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.OverallStr + " \n";
+                                message += "#" + (count + 1) + " - " + m.Username + " - " + m.OverallStr + "% \n";
                                 count++;
                             }
                             message += "```";
